@@ -8,6 +8,8 @@ import com.geekbrains.tests.view.search.ViewSearchContract
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+
+import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
@@ -30,7 +32,8 @@ class SearchPresenterTest {
         //Раньше было @RunWith(MockitoJUnitRunner.class) в аннотации к самому классу (SearchPresenterTest)
         MockitoAnnotations.initMocks(this)
         //Создаем Презентер, используя моки Репозитория и Вью, проинициализированные строкой выше
-        presenter = SearchPresenter(viewContract, repository)
+        presenter = SearchPresenter(repository)
+        presenter.onAttach(viewContract)
     }
 
     @Test //Проверим вызов метода searchGitHub() у нашего Репозитория
@@ -41,6 +44,20 @@ class SearchPresenterTest {
         //Убеждаемся, что все работает как надо
         verify(repository, times(1)).searchGithub(searchQuery, presenter)
     }
+
+
+    /**
+    //Не могу проверить тесты, почему то сразу после скачивания проекта они сразу все не работали
+    */
+    @Test
+    fun xxx() {
+        presenter.onDetach()
+        presenter.handleGitHubError()
+        verify(viewContract).displayLoading(anyBoolean())
+        verify(viewContract).displayError()
+    }
+
+
 
     @Test //Проверяем работу метода handleGitHubError()
     fun handleGitHubError_Test() {
